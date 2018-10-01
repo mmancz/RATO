@@ -1,0 +1,159 @@
+#include <cstdlib>
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+
+#define LINHAS 22
+#define COLUNAS 21
+#define INICIO_LINHA 1
+#define INICIO_COLUNA 0
+#define FIM_LINHA 22
+#define FIM_COLUNA 21
+
+
+int l = INICIO_LINHA;
+int c = INICIO_COLUNA;
+
+int passos = 0;
+
+int esquerda, direita, baixo, cima;
+
+int labirinto[LINHAS][COLUNAS] = {
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1},
+    {1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1},
+    {1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1},
+    {1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1},
+    {1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1},
+    {1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1},
+    {1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1},
+    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1},
+    {1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
+};
+
+void layoutLabirinto() {
+    char c;
+    for (int i = 0; i < LINHAS; i++) {
+        for (int j = 0; j < COLUNAS; j++) {
+            switch (labirinto[i][j]) {
+                case 0:
+                    c = ' ';
+                    break; //espaço vazio
+                case 1:
+                    c = '#';
+                    break; //paredes
+                case 2:
+                    c = '@';
+                    break;
+                case 3:
+                    c = ' ';
+                    break; //caminho feito pelo rato
+                default:
+                    c = ' ';
+                    break; //diferente é igual a espaço vazio
+            }
+            cout << c;
+        }
+        cout << endl;
+    }
+}
+
+void layoutLabirinto2() {
+    char c;
+    for (int i = 0; i < LINHAS; i++) {
+        for (int j = 0; j < COLUNAS; j++) {
+            if (labirinto[i][j] == 0) {
+                c = '|';
+            }
+            if (labirinto[i][j] == 1) {
+                c = '|';
+            }
+            if (labirinto[i][j] == 2) {
+                c = 'R';
+            }
+            if (labirinto[i][j] == 3) {
+                c = '#';
+            }
+            cout << c;
+        }
+        cout << endl;
+    }
+}
+
+void AndarLabirinto() {
+    system("CLS");
+    esquerda = labirinto[l][c-1];
+    direita = labirinto[l][c+1];
+    cima = labirinto[l-1][c];
+    baixo = labirinto[l+1][c];
+    if (baixo == 0) {
+        l++;
+        labirinto[l][c] = 2;
+    } else if (direita == 0) {
+        c++;
+        labirinto[l][c] = 2;
+    } else if (cima == 0) {
+        l--;
+        labirinto[l][c] = 2;
+    } else if (esquerda == 0) {
+        c--;
+        labirinto[l][c] = 2;
+    }
+    else if (baixo == 2) {
+        l++;
+        labirinto[l][c] = 2;
+        labirinto[l-1][c] = 3;
+    } else if (direita == 2) {
+        c++;
+        labirinto[l][c] = 2;
+        labirinto[l][c-1] = 3;
+    } else if (cima == 2) {
+        l--;
+        labirinto[l][c] = 2;
+        labirinto[l+1][c] = 3;
+    } else if (esquerda == 2) {
+        c--;
+        labirinto[l][c] = 2;
+        labirinto[l][c+1] = 3;
+    }
+}
+
+void ModoAutomatico() {
+    while (l != FIM_LINHA || c != FIM_COLUNA) {
+        layoutLabirinto2();
+        cout << endl;
+        cout << "Linhas: " << l << endl;
+        cout << "Colunas: " << c << endl;
+        cout << "Passo(s) percorrido(s): " << passos << endl;
+        cout << "Nome: Murilo Mancz RA: 014461" << endl <<endl;
+        cout << endl;
+        AndarLabirinto();
+        passos++;
+    }
+}
+
+int main() {
+    ModoAutomatico();
+    system("CLS");
+    cout << "Labirinto Concluido!" << endl << endl;
+    cout << "Passo(s) percorrido(s): " << passos <<endl <<endl;
+    cout << "Nome: Murilo Mancz RA: 014461" << endl <<endl;	
+    layoutLabirinto2();
+    cout << endl;
+    
+    system("PAUSE");
+    return 0;
+}
